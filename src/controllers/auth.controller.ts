@@ -13,7 +13,7 @@ export class AuthController {
       const { createUserData, cookie }: UserSigUp = await this.auth.signup(userData);
       // here we set cookie so user directly logged into app
       res.setHeader('Set-Cookie', [cookie]);
-      res.status(201).json({ data: createUserData, message: 'signup' });
+      res.status(201).json({ data: createUserData, message: 'Account created successfully', success: true });
     } catch (error) {
       next(error);
     }
@@ -25,7 +25,7 @@ export class AuthController {
       const { cookie, findUser } = await this.auth.login(userData);
 
       res.setHeader('Set-Cookie', [cookie]);
-      res.status(200).json({ data: findUser, message: 'login' });
+      res.status(200).json({ data: findUser, message: 'login', success: true });
     } catch (error) {
       next(error);
     }
