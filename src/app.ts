@@ -13,6 +13,7 @@ import { dbConnection } from '@database';
 import { Routes } from '@interfaces/routes.interface';
 import { ErrorMiddleware } from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
+import RateLimitingMiddleware from '@middlewares/auth.rateLimiting';
 
 export class App {
   public app: express.Application;
@@ -54,13 +55,25 @@ export class App {
     this.app.use(hpp());
     this.app.use(helmet());
     this.app.use(compression());
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
+    this.app.use(express.json({ limit: '10kb' })); // Limit JSON body size to 10kb
+    this.app.use(express.urlencoded({ extended: true, limit: '10kb' })); // Limit URL-encoded body size
+    this.app.use(RateLimitingMiddleware); // Apply rate limiting
+
+    // Security Headers Middleware
+    this.app.use(
+      helmet({
+        contentSecurityPolicy: false, // Adjust as necessary
+      }),
+    );
+
+    // Serve static files (if applicable)
+    this.app.use(express.static('public')); // Adjust the path as necessary
   }
 
   private initializeRoutes(routes: Routes[]) {
     routes.forEach(route => {
+      // Example of input validation
       this.app.use('/', route.router);
     });
   }

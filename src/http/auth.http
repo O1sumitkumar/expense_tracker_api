@@ -7,8 +7,9 @@ POST {{ baseURL }}/signup
 Content-Type: application/json
 
 {
-    "email": "example@email.com",
-    "password": "password"
+    "name":"Sumeet kumar jha",
+    "email": "test@gmail.com",
+    "password": "123456789"
 }
 
 ###
@@ -17,8 +18,8 @@ POST {{ baseURL }}/login
 Content-Type: application/json
 
 {
-    "email": "example@email.com",
-    "password": "password"
+    "email": "test@gmail.com",
+    "password": "123456789"
 }
 
 ###

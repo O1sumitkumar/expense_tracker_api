@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { Container } from 'typedi';
 import { RequestWithUser } from '@interfaces/auth.interface';
-import { User } from '@interfaces/users.interface';
+import { User, UserSigUp } from '@interfaces/users.interface';
 import { AuthService } from '@services/auth.service';
 
 export class AuthController {
@@ -10,9 +10,10 @@ export class AuthController {
   public signUp = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userData: User = req.body;
-      const signUpUserData: User = await this.auth.signup(userData);
-
-      res.status(201).json({ data: signUpUserData, message: 'signup' });
+      const { createUserData, cookie }: UserSigUp = await this.auth.signup(userData);
+      // here we set cookie so user directly logged into app
+      res.setHeader('Set-Cookie', [cookie]);
+      res.status(201).json({ data: createUserData, message: 'signup' });
     } catch (error) {
       next(error);
     }
